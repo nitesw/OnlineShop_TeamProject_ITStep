@@ -1,7 +1,14 @@
 # OnlineShop_TeamProject_ITStep
-This is a team project, made by 3 people.
 
-The project is being build with Django (as a backend project)
-and React TS (as a frontend project).
+This is a team project developed by 3 people.
 
-We got an idea to build a website like Steam.
+## Project Overview
+
+We are building a web application inspired by platforms like Steam. The project consists of two main components:
+
+- **Backend**: Powered by Django, providing a robust and scalable API.
+- **Frontend**: Developed using React TypeScript (React TS), delivering an interactive and modern user interface.
+
+## Frontend Framework
+
+For the frontend, we are using **Mantine**, a flexible and modern React component library, to help us rapidly build a responsive and accessible UI.
