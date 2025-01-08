@@ -1,6 +1,8 @@
 import Footer from "./footer.tsx";
 import {Flex} from "@mantine/core";
 import classes from './css/layout.module.css';
+import Header from "./header.tsx";
+import {Outlet} from "react-router-dom";
 
 const Layout = () => {
     return (
@@ -8,8 +10,10 @@ const Layout = () => {
             direction="column"
             className={classes.height}
         >
-            <div>header</div>
-            <div>content</div>
+            <Header />
+            <div className={classes.content}>
+                <Outlet />
+            </div>
             <Footer />
         </Flex>
     )

@@ -3,6 +3,7 @@ import '@mantine/core/styles.css';
 import {MantineProvider} from "@mantine/core";
 import {Route, Routes} from "react-router-dom";
 import Layout from "./components/common/layout";
+import PageNotFound from "./components/common/pagenotfound";
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
                 <Route path="/library" element={<div>Library page</div>}/>
                 <Route path="/profile" element={<div>Profile page</div>}/>
                 <Route path="/support" element={<div>Support page</div>}/>
-                <Route path="*" element={<div>404 - Page Not Found</div>} />
+                <Route path="*" element={<PageNotFound />} />
             </Route>
         </Routes>
     </MantineProvider>
