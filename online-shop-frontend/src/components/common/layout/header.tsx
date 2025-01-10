@@ -2,10 +2,11 @@ import {
     IconBook,
     IconChartPie3,
     IconChevronDown,
-    IconCode,
+    IconHome,
     IconCoin,
     IconFingerprint,
-    IconNotification,
+    IconNotification, IconHeart, IconNews,
+    IconChartBar,
 } from '@tabler/icons-react';
 import {
     Anchor,
@@ -30,34 +31,24 @@ import classes from './css/header.module.css';
 
 const mockdata = [
     {
-        icon: IconCode,
-        title: 'Open source',
-        description: 'This Pokémon’s cry is very loud and distracting',
+        icon: IconHome,
+        title: 'Home',
+        description: 'Explore new games and updates.',
     },
     {
-        icon: IconCoin,
-        title: 'Free for everyone',
-        description: 'The fluid of Smeargle’s tail secretions changes',
+        icon: IconHeart,
+        title: 'Wishlist',
+        description: 'Track your favorite games.',
     },
     {
-        icon: IconBook,
-        title: 'Documentation',
-        description: 'Yanma is capable of seeing 360 degrees without',
+        icon: IconNews,
+        title: 'News',
+        description: 'Get the latest gaming news.',
     },
     {
-        icon: IconFingerprint,
-        title: 'Security',
-        description: 'The shell’s rounded shape and the grooves on its.',
-    },
-    {
-        icon: IconChartPie3,
-        title: 'Analytics',
-        description: 'This Pokémon uses its flying ability to quickly chase',
-    },
-    {
-        icon: IconNotification,
-        title: 'Notifications',
-        description: 'Combusken battles with the intensely hot flames it spews',
+        icon: IconChartBar,
+        title: 'Stats',
+        description: 'Check out bestsellers and game trends.',
     },
 ];
 
@@ -70,7 +61,7 @@ const Header = () => {
         <UnstyledButton className={classes.subLink} key={item.title}>
             <Group wrap="nowrap" align="flex-start">
                 <ThemeIcon size={34} variant="default" radius="md">
-                    <item.icon size={22} color={theme.colors.blue[6]} />
+                    <item.icon size={22} color={theme.colors.main_color[6]} />
                 </ThemeIcon>
                 <div>
                     <Text size="sm" fw={500}>
@@ -89,52 +80,28 @@ const Header = () => {
             <header className={classes.header}>
                 <Group justify="space-between" h="100%">
                     <div>Logo</div>
-
                     <Group h="100%" gap={0} visibleFrom="sm">
-                        <a href="#" className={classes.link}>
-                            Store
-                        </a>
                         <HoverCard width={600} position="bottom" radius="md" shadow="md" withinPortal>
                             <HoverCard.Target>
                                 <a href="#" className={classes.link}>
                                     <Center inline>
                                         <Box component="span" mr={5}>
-                                            Community
+                                            Store
                                         </Box>
-                                        <IconChevronDown size={16} color={theme.colors.blue[6]}/>
+                                        <IconChevronDown size={16} color={theme.colors.main_color[6]}/>
                                     </Center>
                                 </a>
                             </HoverCard.Target>
 
                             <HoverCard.Dropdown style={{overflow: 'hidden'}}>
-                                <Group justify="space-between" px="md">
-                                    <Text fw={500}>Features</Text>
-                                    <Anchor href="#" fz="xs">
-                                        View all
-                                    </Anchor>
-                                </Group>
-
-                                <Divider my="sm"/>
-
                                 <SimpleGrid cols={2} spacing={0}>
                                     {links}
                                 </SimpleGrid>
-
-                                <div className={classes.dropdownFooter}>
-                                    <Group justify="space-between">
-                                        <div>
-                                            <Text fw={500} fz="sm">
-                                                Get started
-                                            </Text>
-                                            <Text size="xs" c="dimmed">
-                                                Their food sources have decreased, and their numbers
-                                            </Text>
-                                        </div>
-                                        <Button variant="default">Get started</Button>
-                                    </Group>
-                                </div>
                             </HoverCard.Dropdown>
                         </HoverCard>
+                        <a href="#" className={classes.link}>
+                            Community
+                        </a>
                         <a href="#" className={classes.link}>
                             About
                         </a>
@@ -162,20 +129,19 @@ const Header = () => {
                 zIndex={1000000}
             >
                 <ScrollArea h="calc(100vh - 80px" mx="-md">
-                    <Divider my="sm" />
-
-                    <a href="#" className={classes.link}>
-                        Store
-                    </a>
+                    <Divider my="sm"/>
                     <UnstyledButton className={classes.link} onClick={toggleLinks}>
                         <Center inline>
                             <Box component="span" mr={5}>
-                                Community
+                                Store
                             </Box>
-                            <IconChevronDown size={16} color={theme.colors.blue[6]} />
+                            <IconChevronDown size={16} color={theme.colors.main_color[6]}/>
                         </Center>
                     </UnstyledButton>
                     <Collapse in={linksOpened}>{links}</Collapse>
+                    <a href="#" className={classes.link}>
+                        Community
+                    </a>
                     <a href="#" className={classes.link}>
                         About
                     </a>
@@ -183,7 +149,7 @@ const Header = () => {
                         Support
                     </a>
 
-                    <Divider my="sm" />
+                    <Divider my="sm"/>
 
                     <Group justify="center" grow pb="xl" px="md">
                         <Button variant="default">Log in</Button>

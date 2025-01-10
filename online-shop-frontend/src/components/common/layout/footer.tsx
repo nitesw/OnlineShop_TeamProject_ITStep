@@ -2,10 +2,10 @@ import { Anchor, Container, Group } from '@mantine/core';
 import classes from './css/footer.module.css';
 
 const links = [
-    { link: '#', label: 'Contact' },
-    { link: '#', label: 'Privacy' },
-    { link: '#', label: 'Blog' },
-    { link: '#', label: 'Careers' },
+    { link: '#', label: 'Store' },
+    { link: '#', label: 'Community' },
+    { link: '#', label: 'About' },
+    { link: '#', label: 'Support' },
 ];
 
 const Footer = () => {

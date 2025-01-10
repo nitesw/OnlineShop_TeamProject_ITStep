@@ -1,5 +1,5 @@
 import { Button, Container, Group, Text, Title } from '@mantine/core';
-import { Illustration } from './images/illustration';
+import { Illustration } from './images/illustration.tsx';
 import classes from './css/pagenotfound.module.css';
 import {Link} from "react-router-dom";
 

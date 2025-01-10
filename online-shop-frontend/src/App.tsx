@@ -1,13 +1,31 @@
 import './App.css'
 import '@mantine/core/styles.css';
-import {MantineProvider} from "@mantine/core";
+import {MantineProvider, createTheme} from "@mantine/core";
 import {Route, Routes} from "react-router-dom";
 import Layout from "./components/common/layout";
-import PageNotFound from "./components/common/pagenotfound";
+import PageNotFound from "./pages/pagenotfound";
 
 function App() {
-  return (
-    <MantineProvider defaultColorScheme="dark">
+    const theme = createTheme({
+        primaryColor: "main_color",
+        colors: {
+            "main_color": [
+                "#ffeaeb",
+                "#fdd6d6",
+                "#f1abac",
+                "#e67e7e",
+                "#dd5858",
+                "#d83f3f",
+                "#d63232",
+                "#be2425",
+                "#aa1c20",
+                "#961119"
+            ]
+        }
+    });
+
+    return (
+    <MantineProvider defaultColorScheme="dark" theme={theme}>
         <Routes>
             <Route path="/" element={<Layout/>}>
                 <Route index element={<div>Store page</div>}></Route>
@@ -22,4 +40,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
