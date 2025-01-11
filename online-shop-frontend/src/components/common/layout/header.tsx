@@ -1,15 +1,10 @@
 import {
-    IconBook,
-    IconChartPie3,
     IconChevronDown,
     IconHome,
-    IconCoin,
-    IconFingerprint,
-    IconNotification, IconHeart, IconNews,
+    IconHeart, IconNews,
     IconChartBar,
 } from '@tabler/icons-react';
 import {
-    Anchor,
     Box,
     Burger,
     Button,
@@ -28,6 +23,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './css/header.module.css';
+import {Link} from "react-router-dom";
 
 const mockdata = [
     {
@@ -58,21 +54,23 @@ const Header = () => {
     const theme = useMantineTheme();
 
     const links = mockdata.map((item) => (
-        <UnstyledButton className={classes.subLink} key={item.title}>
-            <Group wrap="nowrap" align="flex-start">
-                <ThemeIcon size={34} variant="default" radius="md">
-                    <item.icon size={22} color={theme.colors.main_color[6]} />
-                </ThemeIcon>
-                <div>
-                    <Text size="sm" fw={500}>
-                        {item.title}
-                    </Text>
-                    <Text size="xs" c="dimmed">
-                        {item.description}
-                    </Text>
-                </div>
-            </Group>
-        </UnstyledButton>
+        <Link to={item.title === "Wishlist" ? "/wishlist" : item.title === "News" ? "/news" : item.title === "Stats" ? "/stats" : "/"}>
+            <UnstyledButton className={classes.subLink} key={item.title}>
+                <Group wrap="nowrap" align="flex-start">
+                    <ThemeIcon size={34} variant="default" radius="md">
+                        <item.icon size={22} color={theme.colors.main_color[6]} />
+                    </ThemeIcon>
+                    <div>
+                        <Text size="sm" fw={500}>
+                            {item.title}
+                        </Text>
+                        <Text size="xs" c="dimmed">
+                            {item.description}
+                        </Text>
+                    </div>
+                </Group>
+            </UnstyledButton>
+        </Link>
     ));
 
     return (
@@ -83,14 +81,14 @@ const Header = () => {
                     <Group h="100%" gap={0} visibleFrom="sm">
                         <HoverCard width={600} position="bottom" radius="md" shadow="md" withinPortal>
                             <HoverCard.Target>
-                                <a href="#" className={classes.link}>
+                                <Link to="/" className={classes.link}>
                                     <Center inline>
                                         <Box component="span" mr={5}>
                                             Store
                                         </Box>
                                         <IconChevronDown size={16} color={theme.colors.main_color[6]}/>
                                     </Center>
-                                </a>
+                                </Link>
                             </HoverCard.Target>
 
                             <HoverCard.Dropdown style={{overflow: 'hidden'}}>
@@ -99,20 +97,24 @@ const Header = () => {
                                 </SimpleGrid>
                             </HoverCard.Dropdown>
                         </HoverCard>
-                        <a href="#" className={classes.link}>
+                        <Link to="/community" className={classes.link}>
                             Community
-                        </a>
-                        <a href="#" className={classes.link}>
+                        </Link>
+                        <Link to="/about" className={classes.link}>
                             About
-                        </a>
-                        <a href="#" className={classes.link}>
+                        </Link>
+                        <Link to="/support" className={classes.link}>
                             Support
-                        </a>
+                        </Link>
                     </Group>
 
                     <Group visibleFrom="sm">
-                        <Button variant="default">Log in</Button>
-                        <Button>Sign up</Button>
+                        <Link to="/login">
+                            <Button variant="default">Log in</Button>
+                        </Link>
+                        <Link to="/signup">
+                            <Button>Sign up</Button>
+                        </Link>
                     </Group>
 
                     <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="sm"/>
@@ -139,21 +141,25 @@ const Header = () => {
                         </Center>
                     </UnstyledButton>
                     <Collapse in={linksOpened}>{links}</Collapse>
-                    <a href="#" className={classes.link}>
+                    <Link to="/community" className={classes.link}>
                         Community
-                    </a>
-                    <a href="#" className={classes.link}>
+                    </Link>
+                    <Link to="/about" className={classes.link}>
                         About
-                    </a>
-                    <a href="#" className={classes.link}>
+                    </Link>
+                    <Link to="/support" className={classes.link}>
                         Support
-                    </a>
+                    </Link>
 
                     <Divider my="sm"/>
 
                     <Group justify="center" grow pb="xl" px="md">
-                        <Button variant="default">Log in</Button>
-                        <Button>Sign up</Button>
+                        <Link to="/login">
+                            <Button variant="default">Log in</Button>
+                        </Link>
+                        <Link to="/signup">
+                            <Button>Sign up</Button>
+                        </Link>
                     </Group>
                 </ScrollArea>
             </Drawer>
