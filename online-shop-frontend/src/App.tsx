@@ -7,6 +7,7 @@ import PageNotFound from "./pages/pagenotfound";
 import LoginPage from "./pages/loginpage";
 import SignupPage from "./pages/signuppage";
 import ForgotPasswordPage from "./pages/forgotpasswordpage";
+import SupportPage from "./pages/supportpage";
 
 function App() {
     const theme = createTheme({
@@ -39,7 +40,7 @@ function App() {
                 <Route path="/about" element={<div>About page</div>} />
                 <Route path="/library" element={<div>Library page</div>} />
                 <Route path="/profile" element={<div>Profile page</div>} />
-                <Route path="/support" element={<div>Support page</div>} />
+                <Route path="/support" element={<SupportPage/>} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
