@@ -1,5 +1,7 @@
 import { Anchor, Container, Group } from '@mantine/core';
 import classes from './css/footer.module.css';
+import logo from "../../../assets/banner_png.png";
+import {Link} from "react-router-dom";
 
 const links = [
     { link: '#', label: 'Store' },
@@ -24,7 +26,9 @@ const Footer = () => {
     return (
         <div className={classes.footer}>
             <Container className={classes.inner}>
-                <div>Logo</div>
+                <Link to="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center'  }}>
+                    <img src={logo} alt="Logo" style={{height: '64px'}} draggable={false}/>
+                </Link>
                 <Group className={classes.links}>{items}</Group>
             </Container>
         </div>

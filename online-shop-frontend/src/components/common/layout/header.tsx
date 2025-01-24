@@ -24,6 +24,7 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import classes from './css/header.module.css';
 import {Link} from "react-router-dom";
+import logo from "../../../assets/banner_png.png"
 
 const mockdata = [
     {
@@ -54,7 +55,7 @@ const Header = () => {
     const theme = useMantineTheme();
 
     const links = mockdata.map((item) => (
-        <Link to={item.title === "Wishlist" ? "/wishlist" : item.title === "News" ? "/news" : item.title === "Stats" ? "/stats" : "/"}>
+        <Link to={item.title === "Wishlist" ? "/wishlist" : item.title === "News" ? "/news" : item.title === "Stats" ? "/stats" : "/"} key={item.title}>
             <UnstyledButton className={classes.subLink} key={item.title}>
                 <Group wrap="nowrap" align="flex-start">
                     <ThemeIcon size={34} variant="default" radius="md">
@@ -77,7 +78,9 @@ const Header = () => {
         <Box pb={120}>
             <header className={classes.header}>
                 <Group justify="space-between" h="100%">
-                    <div>Logo</div>
+                    <Link to="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center'  }}>
+                        <img src={logo} alt="Logo" style={{height: '48px'}} draggable={false}/>
+                    </Link>
                     <Group h="100%" gap={0} visibleFrom="sm">
                         <HoverCard width={600} position="bottom" radius="md" shadow="md" withinPortal>
                             <HoverCard.Target>
