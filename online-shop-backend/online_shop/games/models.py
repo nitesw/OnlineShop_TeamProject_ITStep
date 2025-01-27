@@ -1,10 +1,11 @@
 import uuid
 import datetime
-
+from django.core.validators import FileExtensionValidator
 from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.text import slugify
 from decimal import Decimal
+import os
 
 # Create your models here.
 class Genre(models.Model):
@@ -46,14 +47,32 @@ class Game(models.Model):
         return self.title
 
 def generate_unique_filename(instance, filename):
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-    unique_filename = f"{instance.game.id}_{timestamp}_{uuid.uuid4().hex}_{filename}"
+    timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+    extension = os.path.splitext(filename)[1]
+    unique_filename = f"{instance.game.id}_{timestamp}_{uuid.uuid4().hex}{extension}"
     return f"game_images/{instance.game.id}/{unique_filename}"
 
 class GameImage(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to=generate_unique_filename)
+    image = models.ImageField(
+        upload_to=generate_unique_filename,
+        validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])]
+    )
     alt_text = models.CharField(max_length=255, blank=True, help_text="Alternative text for the image")
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old_image = GameImage.objects.get(pk=self.pk).image
+            if old_image and old_image != self.image:
+                if os.path.isfile(old_image.path):
+                    os.remove(old_image.path)
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.image:
+            if os.path.isfile(self.image.path):
+                os.remove(self.image.path)
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return f"Image for {self.game.title}"

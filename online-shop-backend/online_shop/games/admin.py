@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Genre, Game, GameImage
 from django.contrib.admin import SimpleListFilter
+from django.utils.html import format_html
 
 # Register your models here.
 @admin.register(Genre)
@@ -42,7 +43,10 @@ class GameImageAdmin(admin.ModelAdmin):
 
     def image_preview(self, obj):
         if obj.image:
-            return f'<img src="{obj.image.url}" width="100" height="100" style="object-fit: cover;"/>'
+            return format_html(
+                '<img src="{}" width="100" height="100" style="object-fit: cover;" draggable="false"/>',
+                obj.image.url
+            )
         return "No Image"
 
     image_preview.short_description = 'Image Preview'
