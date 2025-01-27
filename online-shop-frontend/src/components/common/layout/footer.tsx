@@ -4,22 +4,23 @@ import logo from "../../../assets/banner_png.png";
 import {Link} from "react-router-dom";
 
 const links = [
-    { link: '#', label: 'Store' },
-    { link: '#', label: 'Community' },
-    { link: '#', label: 'About' },
-    { link: '#', label: 'Support' },
+    { link: '/', label: 'Store' },
+    { link: '/community', label: 'Community' },
+    { link: '/about', label: 'About' },
+    { link: '/support', label: 'Support' },
 ];
 
 const Footer = () => {
     const items = links.map((link) => (
         <Anchor<'a'>
             c="dimmed"
-            key={link.label}
-            href={link.link}
+            key={link.link}
             onClick={(event) => event.preventDefault()}
             size="sm"
         >
-            {link.label}
+            <Link to={link.link} style={{ textDecoration: 'none', color: 'inherit' }}>
+                {link.label}
+            </Link>
         </Anchor>
     ));
 
