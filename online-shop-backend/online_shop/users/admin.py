@@ -11,7 +11,7 @@ class CustomUserAdmin(UserAdmin):
                 'profile_picture',
                 'bio',
                 'location',
-                'games_owned',
+                'owned_games',
                 'discord_id',
                 'twitch_url',
                 'is_online',
@@ -20,8 +20,12 @@ class CustomUserAdmin(UserAdmin):
             ),
         }),
     )
-    list_display = ('username', 'email', 'is_online', 'games_owned', 'get_role')
+    list_display = ('username', 'email', 'is_online', 'owned_games_count', 'get_role')
     search_fields = ('username', 'email', 'discord_id', 'location')
+
+    def owned_games_count(self, obj):
+        return obj.owned_games.count()
+    owned_games_count.short_description = 'Games Count'
 
     def get_role(self, obj):
         return obj.role.name if obj.role else 'No role assigned'
