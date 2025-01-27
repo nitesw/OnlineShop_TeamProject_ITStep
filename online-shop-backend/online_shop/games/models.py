@@ -31,7 +31,7 @@ class Game(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     discount = models.DecimalField(max_digits=5, decimal_places=2, default=0, validators=[MaxValueValidator(Decimal('100'))])
     genres = models.ManyToManyField(Genre, related_name='games', blank=True)
-    # TODO: add comments
+    # TODO: add reviews
 
     def save(self, *args, **kwargs):
         if not self.slug:
