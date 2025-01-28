@@ -20,10 +20,19 @@ class CustomUser(AbstractUser):
     role = models.ForeignKey(Role, related_name='users', on_delete=models.SET_NULL, null=True, blank=True)
     owned_games = models.ManyToManyField('games.Game', related_name='owners', blank=True)
     wishlist = models.ManyToManyField('games.Game', related_name='wishlist_by', blank=True)
-    # TODO: add ability to add other users to friends (aka field friends)
+    friends = models.ManyToManyField('self', through='FriendRequest', related_name='friends_set', symmetrical=False)
 
     def save(self, *args, **kwargs):
         if not self.role:
             default_role = Role.objects.get(name='User')
             self.role = default_role
         super().save(*args, **kwargs)
+
+class FriendRequest(models.Model):
+    sender = models.ForeignKey(CustomUser, related_name='sent_requests', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(CustomUser, related_name='received_requests', on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('declined', 'Declined')], default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Friend request from {self.sender.username} to {self.receiver.username} - {self.status}"
