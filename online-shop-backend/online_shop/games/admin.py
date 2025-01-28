@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Genre, Game, GameImage
+from .models import Genre, Game, GameImage, Review
 from django.contrib.admin import SimpleListFilter
 from django.utils.html import format_html
 
@@ -51,3 +51,17 @@ class GameImageAdmin(admin.ModelAdmin):
 
     image_preview.short_description = 'Image Preview'
     image_preview.allow_tags = True
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('rating', 'review_text', 'created_at', 'get_username', 'get_game_title')
+    search_fields = ('get_username', 'get_game_title', 'review_text')
+    list_filter = ('user__username', 'game__title', 'created_at', 'rating')
+
+    def get_username(self, obj):
+        return obj.user.username
+    get_username.short_description = 'Username'
+
+    def get_game_title(self, obj):
+        return obj.game.title
+    get_game_title.short_description = 'Game Title'

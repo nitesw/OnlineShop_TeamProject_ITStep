@@ -6,11 +6,12 @@ from django.db import models
 from django.utils.text import slugify
 from decimal import Decimal
 import os
+from datetime import date
 
 # Create your models here.
 class Genre(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=False)
     slug = models.SlugField(unique=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -24,14 +25,20 @@ class Genre(models.Model):
 class Game(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
-    description = models.TextField(blank=True)
-    release_date = models.DateField(blank=True, null=True)
-    developer = models.CharField(max_length=255, blank=True)
-    publisher = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=False)
+    release_date = models.DateField(blank=False, null=False, default=date.today)
+    developer = models.CharField(max_length=255, blank=False, null=False)
+    publisher = models.CharField(max_length=255, blank=False, null=False)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     discount = models.DecimalField(max_digits=5, decimal_places=2, default=0, validators=[MaxValueValidator(Decimal('100'))])
-    genres = models.ManyToManyField(Genre, related_name='games', blank=True)
-    # TODO: add reviews
+    genres = models.ManyToManyField(Genre, related_name='games', blank=False)
+
+    def average_rating(self):
+        reviews = self.reviews.all()
+        if reviews:
+            total = sum([review.rating for review in reviews])
+            return total / len(reviews)
+        return 0
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -58,7 +65,7 @@ class GameImage(models.Model):
         upload_to=generate_unique_filename,
         validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])]
     )
-    alt_text = models.CharField(max_length=255, blank=True, help_text="Alternative text for the image")
+    alt_text = models.CharField(max_length=255, blank=False, help_text="Alternative text for the image")
 
     def save(self, *args, **kwargs):
         if self.pk:
@@ -76,3 +83,13 @@ class GameImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.game.title}"
+
+class Review(models.Model):
+    rating = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    review_text = models.TextField(blank=True)
+    user = models.ForeignKey('users.CustomUser', related_name='reviews', on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, related_name='reviews', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Review by {self.user.username} for {self.game.title}"
