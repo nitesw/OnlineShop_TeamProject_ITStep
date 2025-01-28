@@ -48,7 +48,8 @@ class Game(models.Model):
     def discounted_price(self):
         price = Decimal(self.price)
         discount = Decimal(self.discount)
-        return price - (price * discount / Decimal('100'))
+        discounted_price = price - (price * discount / Decimal('100'))
+        return discounted_price.quantize(Decimal('0.01'))
 
     def __str__(self):
         return self.title
