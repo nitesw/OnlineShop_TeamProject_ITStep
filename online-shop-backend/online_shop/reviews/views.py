@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from .models import Review
 from .serializers import GameReviewSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -14,21 +14,20 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    @action(detail=True, methods=['put', 'patch'], permission_classes=[IsAuthenticatedOrReadOnly])
-    def update_review(self, request, pk=None):
+    def update(self, request, *args, **kwargs):
         review = self.get_object()
         if review.user != request.user:
-            return Response({"detail": "You can only edit your own reviews"}, status=403)
-        serializer = self.get_serializer(review, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=400)
+            return Response(
+                {"detail": "You can only edit your own reviews."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return super().update(request, *args, **kwargs)
 
-    @action(detail=True, methods=['delete'], permission_classes=[IsAuthenticatedOrReadOnly])
-    def delete_review(self, request, pk=None):
+    def destroy(self, request, *args, **kwargs):
         review = self.get_object()
         if review.user != request.user:
-            return Response({"detail": "You can only delete your own reviews"}, status=403)
-        review.delete()
-        return Response({"detail": "Review deleted successfully"})
+            return Response(
+                {"detail": "You can only delete your own reviews."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return super().destroy(request, *args, **kwargs)

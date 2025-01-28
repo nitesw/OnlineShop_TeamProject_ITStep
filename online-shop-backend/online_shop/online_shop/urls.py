@@ -18,9 +18,10 @@ from django.contrib import admin
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 from games.views import GameViewSet, GenreViewSet
-from users.views import CustomUserViewSet
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework_simplejwt.views import TokenRefreshView
+from users.views import CustomUserRegistrationViewSet, TokenObtainPairView, LogoutView, CustomUserViewSet
 
 router = DefaultRouter()
 router.register(r'games', GameViewSet, basename='game')
@@ -29,7 +30,11 @@ router.register(r'users', CustomUserViewSet, basename='user')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('api/register/', CustomUserRegistrationViewSet.as_view(), name='register'),
+    path('api/login/', TokenObtainPairView.as_view(), name='login'),
+    path('api/logout/', LogoutView.as_view(), name='logout'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 if settings.DEBUG:
