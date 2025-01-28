@@ -18,12 +18,14 @@ from django.contrib import admin
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 from games.views import GameViewSet, GenreViewSet
+from users.views import CustomUserViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 
 router = DefaultRouter()
 router.register(r'games', GameViewSet, basename='game')
 router.register(r'genres', GenreViewSet, basename='genre')
+router.register(r'users', CustomUserViewSet, basename='user')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

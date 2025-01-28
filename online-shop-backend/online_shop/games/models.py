@@ -22,8 +22,19 @@ class Genre(models.Model):
     def __str__(self):
         return self.name
 
+def generate_unique_cover_image_filename(instance, filename):
+    timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+    extension = os.path.splitext(filename)[1]
+    unique_filename = f"cover_image_{instance.id}_{timestamp}_{uuid.uuid4().hex}{extension}"
+    return f"game_covers/{instance.id}_{instance.title}/{unique_filename}"
+
 class Game(models.Model):
     title = models.CharField(max_length=255)
+    cover_image = models.ImageField(
+        upload_to=generate_unique_cover_image_filename,
+        validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])],
+        default=0
+    )
     slug = models.SlugField(unique=True, blank=True)
     description = models.TextField(blank=False)
     release_date = models.DateField(blank=False, null=False, default=date.today)
@@ -58,7 +69,7 @@ def generate_unique_filename(instance, filename):
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     extension = os.path.splitext(filename)[1]
     unique_filename = f"{instance.game.id}_{timestamp}_{uuid.uuid4().hex}{extension}"
-    return f"game_images/{instance.game.id}/{unique_filename}"
+    return f"game_images/{instance.game.id}_{instance.game.title}/{unique_filename}"
 
 class GameImage(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='images')
@@ -84,21 +95,3 @@ class GameImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.game.title}"
-
-class Review(models.Model):
-    rating = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    review_text = models.TextField(blank=True)
-    user = models.ForeignKey('users.CustomUser', related_name='reviews', on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, related_name='reviews', on_delete=models.CASCADE)
-
-    def get_game_title(self):
-        game = self.game.title
-        return game
-
-    def get_user_username(self):
-        user = self.user.username
-        return user
-
-    def __str__(self):
-        return f"Review by {self.user.username} for {self.game.title}"
