@@ -54,14 +54,6 @@ class GameImageAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('rating', 'review_text', 'created_at', 'get_username', 'get_game_title')
-    search_fields = ('get_username', 'get_game_title', 'review_text')
+    list_display = ('rating', 'review_text', 'created_at', 'get_user_username', 'get_game_title')
+    search_fields = ('get_user_username', 'get_game_title', 'review_text')
     list_filter = ('user__username', 'game__title', 'created_at', 'rating')
-
-    def get_username(self, obj):
-        return obj.user.username
-    get_username.short_description = 'Username'
-
-    def get_game_title(self, obj):
-        return obj.game.title
-    get_game_title.short_description = 'Game Title'

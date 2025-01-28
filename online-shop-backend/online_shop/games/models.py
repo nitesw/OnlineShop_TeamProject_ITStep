@@ -92,5 +92,13 @@ class Review(models.Model):
     user = models.ForeignKey('users.CustomUser', related_name='reviews', on_delete=models.CASCADE)
     game = models.ForeignKey(Game, related_name='reviews', on_delete=models.CASCADE)
 
+    def get_game_title(self):
+        game = self.game.title
+        return game
+
+    def get_user_username(self):
+        user = self.user.username
+        return user
+
     def __str__(self):
         return f"Review by {self.user.username} for {self.game.title}"
