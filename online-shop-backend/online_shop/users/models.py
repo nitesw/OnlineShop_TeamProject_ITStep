@@ -19,6 +19,7 @@ class CustomUser(AbstractUser):
     status_message = models.CharField(max_length=255, blank=True)
     role = models.ForeignKey(Role, related_name='users', on_delete=models.SET_NULL, null=True, blank=True)
     owned_games = models.ManyToManyField('games.Game', related_name='owners', blank=True)
+    wishlist = models.ManyToManyField('games.Game', related_name='wishlist_by', blank=True)
     # TODO: add ability to add other users to friends (aka field friends)
 
     def save(self, *args, **kwargs):
