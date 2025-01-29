@@ -21,12 +21,16 @@ from games.views import GameViewSet, GenreViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenRefreshView
-from users.views import CustomUserRegistrationViewSet, TokenObtainPairView, LogoutView, CustomUserViewSet
+from users.views import CustomUserRegistrationViewSet, TokenObtainPairView, LogoutView, CustomUserViewSet, WishlistViewSet, OwnedGamesViewSet
+from reviews.views import ReviewViewSet
 
 router = DefaultRouter()
 router.register(r'games', GameViewSet, basename='game')
 router.register(r'genres', GenreViewSet, basename='genre')
 router.register(r'users', CustomUserViewSet, basename='user')
+router.register(r'wishlist', WishlistViewSet, basename='wishlist')
+router.register(r'reviews', ReviewViewSet, basename='reviews')
+router.register(r'owned-games', OwnedGamesViewSet, basename='owned-game')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

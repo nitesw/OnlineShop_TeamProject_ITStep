@@ -29,7 +29,7 @@ class GameViewSet(viewsets.ModelViewSet):
         return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        print("Request User: {self.request.user}")
+        print(f"Request User: {self.request.user}")
         game = serializer.save(added_by=self.request.user)
         self.request.user.added_games.add(game)
 

@@ -46,3 +46,9 @@ class TokenObtainPairSerializer(serializers.Serializer):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
+
+class WishlistSerializer(serializers.Serializer):
+    game_id = serializers.IntegerField(required=True)
+
+class OwnedGamesSerializer(serializers.Serializer):
+    game_id = serializers.IntegerField(required=True)
