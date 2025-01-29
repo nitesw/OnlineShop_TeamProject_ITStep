@@ -2,7 +2,6 @@ from rest_framework import viewsets, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
-
 from .models import Game, Genre
 from .serializers import GameSerializer, GenreSerializer
 
@@ -76,7 +75,7 @@ class GenreViewSet(viewsets.ModelViewSet):
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
-        if request.user.role.pk != 1:  # Check if user is not an admin
+        if request.user.role.pk != 1:
             return Response(
                 {"message": "You must be an admin to delete genres."},
                 status=status.HTTP_403_FORBIDDEN,

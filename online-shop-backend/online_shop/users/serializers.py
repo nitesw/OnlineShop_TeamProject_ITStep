@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import CustomUser
 from reviews.serializers import UserReviewSerializer
 from games.serializers import GameSerializerForOwnedGames, GameSerializerForWishlist, GameSerializerForAddedGames
+from posts.serializers import PostSerializerForCustomUser
 from rest_framework_simplejwt.tokens import RefreshToken
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -10,13 +11,14 @@ class CustomUserSerializer(serializers.ModelSerializer):
     owned_games = GameSerializerForOwnedGames(many=True)
     wishlist = GameSerializerForWishlist(many=True)
     added_games = GameSerializerForAddedGames(many=True)
+    posts = PostSerializerForCustomUser(many=True, source="published_posts")
     # friends =
 
     class Meta:
         model = CustomUser
         fields = [
             'id', 'username', 'email', 'profile_picture', 'bio', 'location', 'discord_id', 'twitch_url', 'is_online',
-            'status_message', 'role', 'owned_games', 'wishlist', 'reviews', 'added_games'
+            'status_message', 'role', 'owned_games', 'wishlist', 'reviews', 'posts', 'added_games'
         ]
         read_only_fields = ['id', 'reviews']
 
@@ -52,3 +54,8 @@ class WishlistSerializer(serializers.Serializer):
 
 class OwnedGamesSerializer(serializers.Serializer):
     game_id = serializers.IntegerField(required=True)
+
+class CustomUserSerializerForLikes(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'profile_picture']
