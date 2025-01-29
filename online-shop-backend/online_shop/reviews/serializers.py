@@ -13,12 +13,14 @@ class ReviewByUserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'owned_games_count', 'reviews_count', 'profile_picture']
 
 class GameReviewSerializer(serializers.ModelSerializer):
-    reviewed_by = ReviewByUserSerializer(source='user')
+    reviewed_by = ReviewByUserSerializer(source='user', read_only=True)
+    review_for = serializers.PrimaryKeyRelatedField(queryset=Game.objects.all(), source="game")
 
     class Meta:
         model = Review
-        fields = ['id', 'rating', 'created_at', 'review_text', 'reviewed_by']
+        fields = ['id', 'rating', 'created_at', 'review_text', 'review_for', 'reviewed_by']
         read_only_fields = ['id', 'created_at', 'reviewed_by']
+
 
 # Reviews for user profiles
 class ReviewForGameSerializer(serializers.ModelSerializer):

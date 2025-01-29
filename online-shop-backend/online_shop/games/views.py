@@ -54,7 +54,6 @@ class GameViewSet(viewsets.ModelViewSet):
         game.delete()
         return Response({"message": "Game deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)
 
-
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
