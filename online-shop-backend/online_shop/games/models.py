@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from decimal import Decimal
 import os
 from datetime import date
+import re
 
 # Create your models here.
 class Genre(models.Model):
@@ -22,11 +23,14 @@ class Genre(models.Model):
     def __str__(self):
         return self.name
 
+def sanitize_title(title):
+    return re.sub(r'[\\/*?:"<>| ]', '', title)
 def generate_unique_cover_image_filename(instance, filename):
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     extension = os.path.splitext(filename)[1]
-    unique_filename = f"cover_image_{instance.id}_{timestamp}_{uuid.uuid4().hex}{extension}"
-    return f"game_covers/{instance.id}_{instance.title}/{unique_filename}"
+    sanitized_title = sanitize_title(instance.title)
+    unique_filename = f"cover_{sanitized_title}_{timestamp}_{uuid.uuid4().hex}{extension}"
+    return f"game_covers/{sanitized_title}/{unique_filename}"
 
 class Game(models.Model):
     title = models.CharField(max_length=255)
@@ -43,7 +47,7 @@ class Game(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     discount = models.DecimalField(max_digits=5, decimal_places=2, default=0, validators=[MaxValueValidator(Decimal('100'))])
     genres = models.ManyToManyField(Genre, related_name='games', blank=False)
-    user = models.ForeignKey('users.CustomUser', related_name='published_by', on_delete=models.CASCADE)
+    added_by = models.ForeignKey('users.CustomUser', related_name='added_by', blank=False, on_delete=models.CASCADE)
 
     def average_rating(self):
         reviews = self.reviews.all()
@@ -56,6 +60,8 @@ class Game(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+        if self.cover_image:
+            self.cover_image.name = generate_unique_cover_image_filename(self, self.cover_image.name)
 
     def discounted_price(self):
         price = Decimal(self.price)

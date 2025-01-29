@@ -13,6 +13,7 @@ class CustomUserAdmin(UserAdmin):
                 'location',
                 'owned_games',
                 'wishlist',
+                'added_games',
                 'discord_id',
                 'twitch_url',
                 'is_online',

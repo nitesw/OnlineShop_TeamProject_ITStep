@@ -25,11 +25,13 @@ class GameViewSet(viewsets.ModelViewSet):
                 {"message": "You must be a seller or an admin to publish games."},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        request.data['user'] = request.user.id
+        request.data['added_by'] = request.user.id
         return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        print("Request User: {self.request.user}")
+        game = serializer.save(added_by=self.request.user)
+        self.request.user.added_games.add(game)
 
     def update(self, request, *args, **kwargs):
         game = self.get_object()

@@ -21,7 +21,7 @@ class GameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Game
-        fields = ['id', 'title', 'cover_image', 'description', 'release_date', 'developer', 'publisher', 'price', 'discount', 'discounted_price', 'average_rating', 'reviews', 'images', 'genres']
+        fields = ['id', 'title', 'cover_image', 'description', 'release_date', 'developer', 'publisher', 'added_by', 'price', 'discount', 'discounted_price', 'average_rating', 'reviews', 'images', 'genres']
         read_only_fields = ['id']
 
 class GameSerializerForOwnedGames(serializers.ModelSerializer):
@@ -36,3 +36,10 @@ class GameSerializerForWishlist(serializers.ModelSerializer):
     class Meta:
         model = Game
         fields = ['id', 'title', 'cover_image', 'release_date', 'price', 'discount', 'discounted_price', 'average_rating', 'genres']
+        read_only_fields = ['id']
+
+class GameSerializerForAddedGames(serializers.ModelSerializer):
+    class Meta:
+        model = Game
+        fields = ['id', 'title', 'cover_image', 'release_date', 'average_rating']
+        read_only_fields = ['id']

@@ -21,6 +21,7 @@ class CustomUser(AbstractUser):
     owned_games = models.ManyToManyField('games.Game', related_name='owners', blank=True)
     wishlist = models.ManyToManyField('games.Game', related_name='wishlist_by', blank=True)
     friends = models.ManyToManyField('self', through='FriendRequest', related_name='friends_set', symmetrical=False)
+    added_games = models.ManyToManyField('games.Game', related_name='added_games', blank=True)
 
     def save(self, *args, **kwargs):
         if not self.role:
