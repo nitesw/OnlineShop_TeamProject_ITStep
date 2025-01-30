@@ -24,6 +24,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from users.views import CustomUserRegistrationViewSet, TokenObtainPairView, LogoutView, CustomUserViewSet, WishlistViewSet, OwnedGamesViewSet
 from reviews.views import ReviewViewSet
 from posts.views import PostViewSet
+from stats.views import StatsViewSet
 
 router = DefaultRouter()
 router.register(r'games', GameViewSet, basename='game')
@@ -33,6 +34,7 @@ router.register(r'wishlist', WishlistViewSet, basename='wishlist')
 router.register(r'reviews', ReviewViewSet, basename='reviews')
 router.register(r'owned-games', OwnedGamesViewSet, basename='owned-game')
 router.register(r'posts', PostViewSet, basename='post')
+router.register(r'stats', StatsViewSet, basename='stat')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
