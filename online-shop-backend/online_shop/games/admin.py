@@ -44,7 +44,7 @@ class GameImageAdmin(admin.ModelAdmin):
     def image_preview(self, obj):
         if obj.image:
             return format_html(
-                '<img src="{}" width="100" height="100" style="object-fit: cover;" draggable="false"/>',
+                '<img src="{}" height="100" style="object-fit: cover;" draggable="false"/>',
                 obj.image.url
             )
         return "No Image"

@@ -20,14 +20,29 @@ from django.urls import path, include
 from games.views import GameViewSet, GenreViewSet
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework_simplejwt.views import TokenRefreshView
+from users.views import CustomUserRegistrationViewSet, TokenObtainPairView, LogoutView, CustomUserViewSet, WishlistViewSet, OwnedGamesViewSet
+from reviews.views import ReviewViewSet
+from posts.views import PostViewSet
+from stats.views import StatsViewSet
 
 router = DefaultRouter()
 router.register(r'games', GameViewSet, basename='game')
 router.register(r'genres', GenreViewSet, basename='genre')
+router.register(r'users', CustomUserViewSet, basename='user')
+router.register(r'wishlist', WishlistViewSet, basename='wishlist')
+router.register(r'reviews', ReviewViewSet, basename='reviews')
+router.register(r'owned-games', OwnedGamesViewSet, basename='owned-game')
+router.register(r'posts', PostViewSet, basename='post')
+router.register(r'stats', StatsViewSet, basename='stat')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('api/register/', CustomUserRegistrationViewSet.as_view(), name='register'),
+    path('api/login/', TokenObtainPairView.as_view(), name='login'),
+    path('api/logout/', LogoutView.as_view(), name='logout'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 if settings.DEBUG:

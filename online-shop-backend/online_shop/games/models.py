@@ -6,11 +6,13 @@ from django.db import models
 from django.utils.text import slugify
 from decimal import Decimal
 import os
+from datetime import date
+import re
 
 # Create your models here.
 class Genre(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=False)
     slug = models.SlugField(unique=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -21,27 +23,51 @@ class Genre(models.Model):
     def __str__(self):
         return self.name
 
+def sanitize_title(title):
+    return re.sub(r'[\\/*?:"<>| ]', '', title)
+def generate_unique_cover_image_filename(instance, filename):
+    timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+    extension = os.path.splitext(filename)[1]
+    sanitized_title = sanitize_title(instance.title)
+    unique_filename = f"cover_{sanitized_title}_{timestamp}_{uuid.uuid4().hex}{extension}"
+    return f"game_covers/{sanitized_title}/{unique_filename}"
+
 class Game(models.Model):
     title = models.CharField(max_length=255)
+    cover_image = models.ImageField(
+        upload_to=generate_unique_cover_image_filename,
+        validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])],
+        default=0
+    )
     slug = models.SlugField(unique=True, blank=True)
-    description = models.TextField(blank=True)
-    release_date = models.DateField(blank=True, null=True)
-    developer = models.CharField(max_length=255, blank=True)
-    publisher = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=False)
+    release_date = models.DateField(blank=False, null=False, default=date.today)
+    developer = models.CharField(max_length=255, blank=False, null=False)
+    publisher = models.CharField(max_length=255, blank=False, null=False)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     discount = models.DecimalField(max_digits=5, decimal_places=2, default=0, validators=[MaxValueValidator(Decimal('100'))])
-    genres = models.ManyToManyField(Genre, related_name='games', blank=True)
-    # TODO: add comments
+    genres = models.ManyToManyField(Genre, related_name='games', blank=False)
+    added_by = models.ForeignKey('users.CustomUser', related_name='added_by', blank=False, on_delete=models.CASCADE)
+
+    def average_rating(self):
+        reviews = self.reviews.all()
+        if reviews:
+            total = sum([review.rating for review in reviews])
+            return total / len(reviews)
+        return 0
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+        if self.cover_image:
+            self.cover_image.name = generate_unique_cover_image_filename(self, self.cover_image.name)
 
     def discounted_price(self):
         price = Decimal(self.price)
         discount = Decimal(self.discount)
-        return price - (price * discount / Decimal('100'))
+        discounted_price = price - (price * discount / Decimal('100'))
+        return discounted_price.quantize(Decimal('0.01'))
 
     def __str__(self):
         return self.title
@@ -50,7 +76,7 @@ def generate_unique_filename(instance, filename):
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     extension = os.path.splitext(filename)[1]
     unique_filename = f"{instance.game.id}_{timestamp}_{uuid.uuid4().hex}{extension}"
-    return f"game_images/{instance.game.id}/{unique_filename}"
+    return f"game_images/{instance.game.id}_{instance.game.title}/{unique_filename}"
 
 class GameImage(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='images')
@@ -58,7 +84,7 @@ class GameImage(models.Model):
         upload_to=generate_unique_filename,
         validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])]
     )
-    alt_text = models.CharField(max_length=255, blank=True, help_text="Alternative text for the image")
+    alt_text = models.CharField(max_length=255, blank=False, help_text="Alternative text for the image")
 
     def save(self, *args, **kwargs):
         if self.pk:
