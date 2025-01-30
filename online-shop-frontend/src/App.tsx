@@ -4,10 +4,11 @@ import {MantineProvider, createTheme} from "@mantine/core";
 import {Route, Routes} from "react-router-dom";
 import Layout from "./components/common/layout";
 import PageNotFound from "./pages/pagenotfound";
-import LoginPage from "./pages/loginpage";
-import SignupPage from "./pages/signuppage";
-import ForgotPasswordPage from "./pages/forgotpasswordpage";
-import SupportPage from "./pages/supportpage";
+import LoginPage from "./pages/login_page";
+import SignupPage from "./pages/signup_page";
+import ForgotPasswordPage from "./pages/forgot_password_page";
+import SupportPage from "./pages/support_page";
+import AboutPage from "./pages/about_page";
 
 function App() {
     const theme = createTheme({
@@ -37,10 +38,10 @@ function App() {
                 <Route path="/news" element={<div>News page</div>} />
                 <Route path="/stats" element={<div>Stats page</div>} />
                 <Route path="/community" element={<div>Community page</div>} />
-                <Route path="/about" element={<div>About page</div>} />
+                <Route path="/about" element={<AboutPage />} />
                 <Route path="/library" element={<div>Library page</div>} />
                 <Route path="/profile" element={<div>Profile page</div>} />
-                <Route path="/support" element={<SupportPage/>} />
+                <Route path="/support" element={<SupportPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/forgotpassword" element={<ForgotPasswordPage />} />

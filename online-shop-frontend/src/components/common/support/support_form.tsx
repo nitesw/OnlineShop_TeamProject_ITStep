@@ -23,7 +23,7 @@ const SupportForm = () => {
 
     return (
         <>
-            <form onSubmit={form.onSubmit(() => {})}>
+            <form onSubmit={form.onSubmit(() => {})} style={{width:'100%'}}>
                 <SimpleGrid cols={{base: 1, sm: 2}} mt="xl">
                     <TextInput
                         label="Name"
