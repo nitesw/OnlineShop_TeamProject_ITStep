@@ -1,5 +1,5 @@
-import ForgotPasswordTitle from "../../components/common/forgotpassword/forgotpassword_title.tsx";
-import ForgotPasswordForm from "../../components/common/forgotpassword/forgotpassword_form.tsx";
+import ForgotPasswordTitle from "../../components/common/forgot_password/forgotpassword_title.tsx";
+import ForgotPasswordForm from "../../components/common/forgot_password/forgotpassword_form.tsx";
 import {Container} from "@mantine/core";
 
 const ForgotPasswordPage = () => {
