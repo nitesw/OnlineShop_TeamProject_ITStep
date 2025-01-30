@@ -11,8 +11,8 @@ class GameImageSerializer(serializers.ModelSerializer):
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = ['id', 'name']
-        read_only_fields = ['id']
+        fields = ['id', 'name', 'slug']
+        read_only_fields = ['id', 'slug']
 
 class GameSerializer(serializers.ModelSerializer):
     images = GameImageSerializer(many=True)
@@ -21,7 +21,8 @@ class GameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Game
-        fields = ['id', 'title', 'cover_image', 'description', 'release_date', 'developer', 'publisher', 'added_by', 'price', 'discount', 'discounted_price', 'average_rating', 'reviews', 'images', 'genres']
+        fields = ['id', 'title', 'cover_image', 'description', 'release_date', 'developer', 'publisher', 'added_by', 'price',
+                  'discount', 'discounted_price', 'average_rating', 'slug', 'reviews', 'images', 'genres']
         read_only_fields = ['id']
 
 class GameSerializerForOwnedGames(serializers.ModelSerializer):

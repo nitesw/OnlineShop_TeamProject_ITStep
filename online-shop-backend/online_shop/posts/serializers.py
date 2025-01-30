@@ -4,8 +4,8 @@ from .models import Category, Post
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name']
-        read_only_fields = ['id']
+        fields = ['id', 'name', 'slug']
+        read_only_fields = ['id', 'slug']
 
 class PostSerializer(serializers.ModelSerializer):
     publisher = serializers.SerializerMethodField()
@@ -17,7 +17,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'cover_image', 'created_at', 'updated_at', 'description', 'total_likes', 'publisher', 'categories']
+        fields = ['id', 'title', 'cover_image', 'created_at', 'updated_at', 'description', 'total_likes', 'slug', 'publisher', 'categories']
         read_only_fields = ['id']
 
 class PostSerializerForCustomUser(serializers.ModelSerializer):

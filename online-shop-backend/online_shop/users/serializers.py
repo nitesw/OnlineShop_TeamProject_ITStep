@@ -1,10 +1,15 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser, FriendRequest
 from reviews.serializers import UserReviewSerializer
 from games.serializers import GameSerializerForOwnedGames, GameSerializerForWishlist, GameSerializerForAddedGames
 from posts.serializers import PostSerializerForCustomUser
 from rest_framework_simplejwt.tokens import RefreshToken
+
+class FriendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'profile_picture']
 
 class CustomUserSerializer(serializers.ModelSerializer):
     reviews = UserReviewSerializer(many=True)
@@ -12,15 +17,23 @@ class CustomUserSerializer(serializers.ModelSerializer):
     wishlist = GameSerializerForWishlist(many=True)
     added_games = GameSerializerForAddedGames(many=True)
     posts = PostSerializerForCustomUser(many=True, source="published_posts")
-    # friends =
+    friends = FriendSerializer(many=True, read_only=True)
 
     class Meta:
         model = CustomUser
         fields = [
             'id', 'username', 'email', 'profile_picture', 'bio', 'location', 'discord_id', 'twitch_url', 'is_online',
-            'status_message', 'role', 'owned_games', 'wishlist', 'reviews', 'posts', 'added_games'
+            'status_message', 'role', 'owned_games', 'wishlist', 'reviews', 'posts', 'added_games', 'friends'
         ]
         read_only_fields = ['id', 'reviews']
+
+class FriendRequestSerializer(serializers.ModelSerializer):
+    sender = CustomUserSerializer()
+    receiver = CustomUserSerializer()
+
+    class Meta:
+        model = FriendRequest
+        fields = ['sender', 'receiver', 'status', 'created_at']
 
 class CustomUserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)

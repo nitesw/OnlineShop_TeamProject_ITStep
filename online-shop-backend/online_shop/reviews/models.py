@@ -1,7 +1,6 @@
 from django.db import models
 
 # Create your models here.
-
 class Review(models.Model):
     rating = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

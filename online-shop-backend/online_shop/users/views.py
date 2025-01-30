@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, serializers
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import CustomUser, Role
+from .models import CustomUser, Role, FriendRequest
 from games.models import Game
 from .serializers import CustomUserSerializer, CustomUserRegistrationSerializer, TokenObtainPairSerializer, \
     WishlistSerializer, OwnedGamesSerializer
@@ -48,6 +49,78 @@ class CustomUserViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
         return super().destroy(request, *args, **kwargs)
+
+    @action(detail=True, methods=['post'])
+    def send_friend_request(self, request, pk=None):
+        sender = request.user
+        receiver = get_object_or_404(CustomUser, pk=pk)
+
+        if FriendRequest.objects.filter(sender=sender, receiver=receiver).exists():
+            return Response({"detail": "Friend request already sent."}, status=status.HTTP_400_BAD_REQUEST)
+
+        friend_request = FriendRequest(sender=sender, receiver=receiver)
+        friend_request.save()
+        return Response({"detail": "Friend request sent."}, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['post'])
+    def cancel_friend_request(self, request, pk=None):
+        sender = request.user
+        receiver = get_object_or_404(CustomUser, pk=pk)
+
+        try:
+            friend_request = FriendRequest.objects.get(sender=sender, receiver=receiver, status='pending')
+        except FriendRequest.DoesNotExist:
+            return Response({"detail": "No pending friend request to cancel."}, status=status.HTTP_400_BAD_REQUEST)
+
+        friend_request.delete()
+        return Response({"detail": "Friend request canceled."}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def accept_friend_request(self, request, pk=None):
+        receiver = request.user
+        sender = get_object_or_404(CustomUser, pk=pk)
+
+        try:
+            friend_request = FriendRequest.objects.get(sender=sender, receiver=receiver, status='pending')
+        except FriendRequest.DoesNotExist:
+            return Response({"detail": "No pending friend request to accept."}, status=status.HTTP_400_BAD_REQUEST)
+
+        friend_request.status = 'accepted'
+        friend_request.save()
+
+        sender.friends.add(receiver)
+        receiver.friends.add(sender)
+
+        return Response({"detail": "Friend request accepted."}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def decline_friend_request(self, request, pk=None):
+        receiver = request.user
+        sender = get_object_or_404(CustomUser, pk=pk)
+
+        try:
+            friend_request = FriendRequest.objects.get(sender=sender, receiver=receiver, status='pending')
+        except FriendRequest.DoesNotExist:
+            return Response({"detail": "No pending friend request to decline."}, status=status.HTTP_400_BAD_REQUEST)
+
+        friend_request.status = 'declined'
+        friend_request.save()
+
+        return Response({"detail": "Friend request declined."}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['get'])
+    def check_friend_request_status(self, request, pk=None):
+        sender = request.user
+        receiver = get_object_or_404(CustomUser, pk=pk)
+
+        pending_request = FriendRequest.objects.filter(sender=sender, receiver=receiver, status='pending').exists()
+        if pending_request:
+            return Response({"status": "pending"}, status=status.HTTP_200_OK)
+
+        if sender.friends.filter(id=receiver.id).exists():
+            return Response({"status": "friends"}, status=status.HTTP_200_OK)
+
+        return Response({"status": "no_request"}, status=status.HTTP_200_OK)
 
 class CustomUserRegistrationViewSet(APIView):
     permission_classes = [AllowAny]
