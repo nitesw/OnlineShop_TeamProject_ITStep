@@ -1,8 +1,9 @@
 from django.db import models
 from users.models import CustomUser
-from games.models import Game
+from games.models import Game, Genre
 from reviews.models import Review
 from posts.models import Post
+
 
 # Create your models here.
 class Stats(models.Model):
@@ -16,7 +17,7 @@ class Stats(models.Model):
     def update_stats(self):
         self.total_games = Game.objects.count()
         self.total_users = CustomUser.objects.count()
-        self.total_genres = Game.objects.values('genres').distinct().count()
+        self.total_genres = Genre.objects.count()
         self.total_reviews = Review.objects.count()
         self.total_purchases = sum(user.owned_games.count() for user in CustomUser.objects.all())
         self.total_posts = Post.objects.count()
