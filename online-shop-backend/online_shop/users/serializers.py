@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import CustomUser, FriendRequest
 from reviews.serializers import UserReviewSerializer
 from games.serializers import GameSerializerForOwnedGames, GameSerializerForWishlist, GameSerializerForAddedGames
@@ -12,12 +13,12 @@ class FriendSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'profile_picture']
 
 class CustomUserSerializer(serializers.ModelSerializer):
-    reviews = UserReviewSerializer(many=True)
-    owned_games = GameSerializerForOwnedGames(many=True)
-    wishlist = GameSerializerForWishlist(many=True)
-    added_games = GameSerializerForAddedGames(many=True)
-    posts = PostSerializerForCustomUser(many=True, source="published_posts")
-    friends = FriendSerializer(many=True, read_only=True)
+    reviews = UserReviewSerializer(many=True, required=False)
+    owned_games = GameSerializerForOwnedGames(many=True, required=False)
+    wishlist = GameSerializerForWishlist(many=True, required=False)
+    added_games = GameSerializerForAddedGames(many=True, required=False)
+    posts = PostSerializerForCustomUser(many=True, source="published_posts", required=False)
+    friends = FriendSerializer(many=True, read_only=True, required=False)
 
     class Meta:
         model = CustomUser
@@ -46,22 +47,6 @@ class CustomUserRegistrationSerializer(serializers.ModelSerializer):
         user = get_user_model().objects.create_user(**validated_data)
         return user
 
-class TokenObtainPairSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
-
-    def validate(self, attrs):
-        from django.contrib.auth import authenticate
-        user = authenticate(username=attrs['username'], password=attrs['password'])
-        if not user:
-            raise serializers.ValidationError("Invalid credentials.")
-
-        refresh = RefreshToken.for_user(user)
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }
-
 class WishlistSerializer(serializers.Serializer):
     game_id = serializers.IntegerField(required=True)
 
@@ -72,3 +57,11 @@ class CustomUserSerializerForLikes(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'profile_picture']
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['role'] = user.role.name
+        token['username'] = user.username
+        return token

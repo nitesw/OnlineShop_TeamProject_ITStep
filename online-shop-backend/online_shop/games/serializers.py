@@ -11,13 +11,13 @@ class GameImageSerializer(serializers.ModelSerializer):
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = ['id', 'name', 'slug']
-        read_only_fields = ['id', 'slug']
+        fields = ['id', 'name', 'slug', 'description']
+        read_only_fields = ['id']
 
 class GameSerializer(serializers.ModelSerializer):
-    images = GameImageSerializer(many=True)
-    genres = GenreSerializer(many=True)
-    reviews = GameReviewSerializer(many=True)
+    images = GameImageSerializer(many=True, required=False)
+    genres = GenreSerializer(many=True, required=False)
+    reviews = GameReviewSerializer(many=True, required=False)
 
     class Meta:
         model = Game

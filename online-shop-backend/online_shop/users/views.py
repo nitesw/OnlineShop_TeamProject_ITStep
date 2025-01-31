@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, serializers
 from rest_framework.decorators import action
@@ -8,8 +7,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import CustomUser, Role, FriendRequest
 from games.models import Game
-from .serializers import CustomUserSerializer, CustomUserRegistrationSerializer, TokenObtainPairSerializer, \
-    WishlistSerializer, OwnedGamesSerializer
+from .serializers import CustomUserSerializer, CustomUserRegistrationSerializer, WishlistSerializer, OwnedGamesSerializer, CustomTokenObtainPairSerializer
 
 # Create your views here.
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -137,7 +135,7 @@ class CustomUserRegistrationViewSet(APIView):
 
 class TokenObtainPairView(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = TokenObtainPairSerializer(data=request.data)
+        serializer = CustomTokenObtainPairSerializer(data=request.data)
         if serializer.is_valid():
             return Response(serializer.validated_data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -29,15 +29,15 @@ def generate_unique_cover_image_filename(instance, filename):
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     extension = os.path.splitext(filename)[1]
     sanitized_title = sanitize_title(instance.title)
-    unique_filename = f"cover_{sanitized_title}_{timestamp}_{uuid.uuid4().hex}{extension}"
-    return f"game_covers/{sanitized_title}/{unique_filename}"
+    unique_filename = f"{instance.id}_{timestamp}_{uuid.uuid4().hex}{extension}"
+    return f"game_cover/{instance.id}_{sanitized_title}/{unique_filename}"
 
 class Game(models.Model):
     title = models.CharField(max_length=255)
     cover_image = models.ImageField(
         upload_to=generate_unique_cover_image_filename,
         validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])],
-        default=0
+        blank=True
     )
     slug = models.SlugField(unique=True, blank=True)
     description = models.TextField(blank=False)
@@ -57,9 +57,17 @@ class Game(models.Model):
         return 0
 
     def save(self, *args, **kwargs):
+        if self.pk:
+            old_cover_image = Game.objects.get(pk=self.pk).cover_image
+            if old_cover_image and old_cover_image != self.cover_image:
+                if os.path.isfile(old_cover_image.path):
+                    os.remove(old_cover_image.path)
+
         if not self.slug:
             self.slug = slugify(self.title)
+
         super().save(*args, **kwargs)
+
         if self.cover_image:
             self.cover_image.name = generate_unique_cover_image_filename(self, self.cover_image.name)
 
@@ -76,13 +84,16 @@ def generate_unique_filename(instance, filename):
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     extension = os.path.splitext(filename)[1]
     unique_filename = f"{instance.game.id}_{timestamp}_{uuid.uuid4().hex}{extension}"
-    return f"game_images/{instance.game.id}_{instance.game.title}/{unique_filename}"
+    sanitized_title = sanitize_title(instance.game.title)
+    return f"game_images/{instance.game.id}_{sanitized_title}/{unique_filename}"
 
 class GameImage(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(
         upload_to=generate_unique_filename,
-        validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])]
+        validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])],
+        blank=True,
+        null=True
     )
     alt_text = models.CharField(max_length=255, blank=False, help_text="Alternative text for the image")
 
