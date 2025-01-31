@@ -9,6 +9,9 @@ import SignupPage from "./pages/signup_page";
 import ForgotPasswordPage from "./pages/forgot_password_page";
 import SupportPage from "./pages/support_page";
 import AboutPage from "./pages/about_page";
+import StorePage from "./pages/store_page";
+import {Notifications} from "@mantine/notifications";
+import {ProtectedRoute} from "./security/ProtectedRoute.tsx";
 
 function App() {
     const theme = createTheme({
@@ -31,19 +34,32 @@ function App() {
 
     return (
     <MantineProvider defaultColorScheme="dark" theme={theme}>
+        <Notifications />
         <Routes>
             <Route path="/" element={<Layout/>}>
-                <Route index element={<div>Store page</div>} />
+                <Route index element={<StorePage/>} />
                 <Route path="/wishlist" element={<div>Wishlist page</div>} />
                 <Route path="/news" element={<div>News page</div>} />
                 <Route path="/stats" element={<div>Stats page</div>} />
                 <Route path="/community" element={<div>Community page</div>} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/library" element={<div>Library page</div>} />
-                <Route path="/profile" element={<div>Profile page</div>} />
+                <Route path="/profile" element={
+                    <ProtectedRoute>
+                        <div>Profile page</div>
+                    </ProtectedRoute>
+                } />
                 <Route path="/support" element={<SupportPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/signup" element={<SignupPage />} />
+                <Route path="/login" element={
+                    <ProtectedRoute>
+                        <LoginPage />
+                    </ProtectedRoute>
+                } />
+                <Route path="/signup" element={
+                    <ProtectedRoute>
+                        <SignupPage />
+                    </ProtectedRoute>
+                } />
                 <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
                 <Route path="*" element={<PageNotFound />} />
             </Route>

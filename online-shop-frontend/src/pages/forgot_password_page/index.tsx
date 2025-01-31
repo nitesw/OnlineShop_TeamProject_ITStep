@@ -4,7 +4,7 @@ import {Container} from "@mantine/core";
 
 const ForgotPasswordPage = () => {
     return(
-        <Container size={460} my={30}>
+        <Container size={460}>
             <ForgotPasswordTitle />
             <ForgotPasswordForm />
         </Container>

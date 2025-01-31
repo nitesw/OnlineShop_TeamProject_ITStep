@@ -5,7 +5,7 @@ import SignupTitle from "../../components/common/signup/signup_title.tsx";
 const SignupPage = () => {
     return (
         <>
-            <Container size={420} my={10}>
+            <Container size={420}>
                 <SignupTitle />
                 <SignupForm />
             </Container>

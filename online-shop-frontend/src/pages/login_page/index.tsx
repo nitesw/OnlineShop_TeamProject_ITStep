@@ -3,9 +3,10 @@ import LoginForm from "../../components/common/login/login_form.tsx";
 import {Container} from "@mantine/core";
 
 const LoginPage = () => {
+
     return (
         <>
-            <Container size={420} my={40}>
+            <Container size={420}>
                 <LoginTitle />
                 <LoginForm />
             </Container>
