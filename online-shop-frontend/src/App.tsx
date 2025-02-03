@@ -14,6 +14,8 @@ import {Notifications} from "@mantine/notifications";
 import {ProtectedRoute} from "./security/ProtectedRoute.tsx";
 import ProfilePage from "./pages/profile_page";
 import '@mantine/carousel/styles.css';
+import '@mantine/charts/styles.css';
+import StatsPage from "./pages/stats_page";
 
 function App() {
     const theme = createTheme({
@@ -43,7 +45,7 @@ function App() {
                 <Route path="/wishlist" element={<div>Wishlist page</div>} />
                 <Route path="/friends" element={<div>Friends page</div>} />
                 <Route path="/news" element={<div>News page</div>} />
-                <Route path="/stats" element={<div>Stats page</div>} />
+                <Route path="/stats" element={<StatsPage />} />
                 <Route path="/community" element={<div>Community page</div>} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/library" element={<div>Library page</div>} />

@@ -1,14 +1,13 @@
 import {
     Button,
     Container,
-    Divider,
     Flex,
     Grid,
     Paper,
     px,
     SimpleGrid,
     Skeleton,
-    Stack,
+    Stack, Title,
     useMantineTheme
 } from '@mantine/core';
 import AvatarWithRole from "../../components/common/profile/profile_avatar_with_role.tsx";
@@ -40,23 +39,24 @@ const ProfilePage = ()=> {
             {isLoading ? (
                 <Container my="md">
                     <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                        <Skeleton height={BASE_HEIGHT} radius="md" animate={false} />
+                        <Skeleton height={BASE_HEIGHT} radius="md" animate={true} />
                         <Stack>
                             <Skeleton
                                 height={getSubHeight(2, px(theme.spacing.md) as number)}
                                 radius="md"
-                                animate={false}
+                                animate={true}
                             />
                             <Skeleton
                                 height={getSubHeight(2, px(theme.spacing.md) as number)}
                                 radius="md"
-                                animate={false}
+                                animate={true}
                             />
                         </Stack>
                     </SimpleGrid>
                 </Container>
                 ) : (
                 <Container my="md">
+                    <Title ta="center" mb="md">{user!.username}'s Profile</Title>
                     <SimpleGrid cols={{ base: 1, sm: 2 }}>
                         <Paper shadow="xs" radius="md" p="xl" bg="#424242">
                             <Flex direction="column" gap="md">
