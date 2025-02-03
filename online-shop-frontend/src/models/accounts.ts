@@ -7,8 +7,19 @@ export interface LoginFormFields {
     password: string;
     rememberMe?: boolean;
 }
+export interface RegisterFormFields {
+    username: string;
+    email: string;
+    password1: string;
+    password2: string;
+}
 export interface LoginModel {
     username: string;
+    password: string;
+}
+export interface RegisterModel {
+    username: string;
+    email: string;
     password: string;
 }
 export interface TokenPayload {

@@ -32,7 +32,6 @@ const ProfilePage = ()=> {
     const account = useAppSelector(selectAccount);
     const userId = Number(account?.id);
     const {data: user, isLoading} = useGetUserQuery(userId, { skip: isNaN(userId) });
-    console.log(user);
 
     return (
         <>

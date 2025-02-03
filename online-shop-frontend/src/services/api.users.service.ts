@@ -1,6 +1,6 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {APP_ENV} from "../env";
-import {LoginModel, UserModel} from "../models/accounts.ts";
+import {LoginModel, RegisterModel, UserModel} from "../models/accounts.ts";
 
 export const apiUser = createApi({
     reducerPath: "user",
@@ -9,6 +9,13 @@ export const apiUser = createApi({
         userLogin: builder.mutation({
             query: (data: LoginModel) => ({
                 url: "/login/",
+                method: "POST",
+                body: data
+            })
+        }),
+        userRegister: builder.mutation({
+            query: (data: RegisterModel) => ({
+                url: "/register/",
                 method: "POST",
                 body: data
             })
@@ -26,10 +33,10 @@ export const apiUser = createApi({
                 };
             }
         }),
-        getUser: builder.query<UserModel, void>({
+        getUser: builder.query<UserModel, number>({
             query: (id) => `/users/${id}/`
         })
     })
 })
 
-export const { useUserLoginMutation, useGetUserQuery, useUserLogoutMutation } = apiUser;
+export const { useUserLoginMutation, useGetUserQuery, useUserLogoutMutation, useUserRegisterMutation } = apiUser;
