@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenRefreshView
 from users.views import CustomUserRegistrationViewSet, TokenObtainPairView, LogoutView, CustomUserViewSet, WishlistViewSet, OwnedGamesViewSet
 from reviews.views import ReviewViewSet
-from posts.views import PostViewSet
+from posts.views import PostViewSet, CategoryViewSet
 from stats.views import StatsViewSet
 
 router = DefaultRouter()
@@ -35,6 +35,7 @@ router.register(r'reviews', ReviewViewSet, basename='reviews')
 router.register(r'owned-games', OwnedGamesViewSet, basename='owned-game')
 router.register(r'posts', PostViewSet, basename='post')
 router.register(r'stats', StatsViewSet, basename='stat')
+router.register(r'categories', CategoryViewSet, basename='category')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

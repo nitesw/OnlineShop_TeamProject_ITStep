@@ -23,7 +23,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            'id', 'username', 'email', 'profile_picture', 'bio', 'location', 'discord_id', 'twitch_url', 'is_online',
+            'id', 'username', 'email', 'profile_picture', 'bio', 'location', 'discord_id', 'twitch_id', 'is_online',
             'status_message', 'role', 'owned_games', 'wishlist', 'reviews', 'posts', 'added_games', 'friends'
         ]
         read_only_fields = ['id', 'reviews']
@@ -64,4 +64,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token['role'] = user.role.name
         token['username'] = user.username
+        user.is_online = True
+        user.save(update_fields=['is_online'])
         return token

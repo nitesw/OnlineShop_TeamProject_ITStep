@@ -19,6 +19,7 @@ environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_URL = 'http://127.0.0.1:8000'
 
 # Media files root directory
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

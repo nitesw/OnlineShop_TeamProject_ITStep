@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from users.models import CustomUser
 from games.models import Game, Genre
@@ -24,21 +25,41 @@ class Stats(models.Model):
         self.save()
 
     def top_users_by_owned_games(self):
-        return CustomUser.objects.annotate(num_owned_games=models.Count('owned_games')) \
-                   .values('id', 'username', 'profile_picture', 'num_owned_games') \
-                   .order_by('-num_owned_games')[:5]
+        users = CustomUser.objects.annotate(num_owned_games=models.Count('owned_games')) \
+            .values('id', 'username', 'profile_picture', 'num_owned_games') \
+            .order_by('-num_owned_games')[:5]
+
+        for user in users:
+            if user['profile_picture']:
+                user['profile_picture'] = self.get_absolute_url(user['profile_picture'])
+
+        return users
+
+    def get_absolute_url(self, path):
+        if path:
+            return f"{settings.BASE_URL}/media/{path}"
+        return ''
 
     def top_games_by_sales(self):
         games = Game.objects.annotate(num_sales=models.Count('owners')) \
-                    .values('id', 'title', 'cover_image', 'genres', 'price', 'discount') \
+                    .values('id', 'title', 'cover_image', 'price', 'discount', 'num_sales') \
                     .order_by('-num_sales')[:10]
 
         for game in games:
             game_instance = Game.objects.get(id=game['id'])
             game['average_rating'] = game_instance.average_rating()
             game['discounted_price'] = game_instance.discounted_price()
+            genres = game_instance.genres.values('id', 'name', 'slug', 'description')
+            game['genres'] = list(genres)
+            if game['cover_image']:
+                game['cover_image'] = self.get_absolute_url(game['cover_image'])
 
-        return games
+            return games
+
+        def get_absolute_url(self, path):
+            if path:
+                return f"{settings.BASE_URL}/media/{path}"
+            return ''
 
     def top_genres_by_game_count(self):
         return Game.objects.values('genres__id', 'genres__name') \

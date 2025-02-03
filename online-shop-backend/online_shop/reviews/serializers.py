@@ -14,11 +14,11 @@ class ReviewByUserSerializer(serializers.ModelSerializer):
 
 class GameReviewSerializer(serializers.ModelSerializer):
     reviewed_by = ReviewByUserSerializer(source='user', read_only=True)
-    review_for = serializers.PrimaryKeyRelatedField(queryset=Game.objects.all(), source="game")
+    # review_for = serializers.PrimaryKeyRelatedField(queryset=Game.objects.all(), source="game")
 
     class Meta:
         model = Review
-        fields = ['id', 'rating', 'created_at', 'review_text', 'review_for', 'reviewed_by']
+        fields = ['id', 'rating', 'created_at', 'review_text', 'reviewed_by']
         read_only_fields = ['id', 'created_at', 'reviewed_by']
 
 
