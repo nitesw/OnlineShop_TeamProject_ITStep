@@ -23,7 +23,7 @@ export const accountSlice = createSlice({
         setAccount: (state, action: PayloadAction<TokenPayload>) => {
             state.account = action.payload;
             state.isAuth = true;
-        },
+        }
     },
 });
 

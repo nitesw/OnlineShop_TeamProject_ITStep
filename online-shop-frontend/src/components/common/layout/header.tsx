@@ -3,6 +3,7 @@ import {
     IconHome,
     IconHeart, IconNews,
     IconChartBar, IconCheck,
+    IconUserCircle, IconLogin2,
 } from '@tabler/icons-react';
 import {
     Box,
@@ -30,6 +31,7 @@ import {accountService} from "../../../services/account.service.ts";
 import { useAppSelector } from '../../../redux/hooks.ts';
 import {useDispatch} from "react-redux";
 import {notifications} from "@mantine/notifications";
+import {useUserLogoutMutation} from "../../../services/api.users.service.ts";
 
 const mockdata = [
     {
@@ -62,19 +64,33 @@ const Header = () => {
     const account = useAppSelector(selectAccount);
     const isAuth = useAppSelector(selectIsAuth);
     const dispatch = useDispatch();
+    const [logoutUser] = useUserLogoutMutation();
 
-    const handleLogout = () => {
-        accountService.logout();
-        dispatch(clear());
-        notifications.show({
-            title: "Success",
-            icon: <IconCheck />,
-            position: "top-center",
-            message: "Successfully logged out!",
-            color: "green",
-            autoClose: 2000,
-            withCloseButton: false
-        });
+    const handleLogout = async () => {
+        try {
+            const refreshToken = accountService.getRefreshToken()!;
+            const accessToken = accountService.getAccessToken()!;
+
+            dispatch(clear());
+            accountService.logout();
+
+            notifications.show({
+                title: "Success",
+                icon: <IconCheck />,
+                position: "top-center",
+                message: "Successfully logged out!",
+                color: "green",
+                autoClose: 2000,
+                withCloseButton: false
+            });
+            navigate("/login");
+
+            if (refreshToken && accessToken) {
+                await logoutUser({ refresh_token: refreshToken, access_token: accessToken }).unwrap();
+            }
+        } catch (error) {
+            console.error("Logout failed", error);
+        }
     };
 
     const links = mockdata.map((item) => (
@@ -155,7 +171,7 @@ const Header = () => {
                         ) : (
                             <>
                                 <Link to="/profile">
-                                    <Button>Profile</Button>
+                                    <Button leftSection={<IconUserCircle />}>Profile</Button>
                                 </Link>
                                 <Link to="/login" onClick={handleLogout}>
                                     <Button variant="default">Logout</Button>
@@ -214,7 +230,7 @@ const Header = () => {
                             <>
                                 <div style={{padding: "0px 10px 10px 10px"}}>
                                     <Link to="/profile" style={{textDecoration: "none"}} onClick={closeDrawer}>
-                                        <Button fullWidth>Profile</Button>
+                                        <Button leftSection={<IconUserCircle />} fullWidth>Profile</Button>
                                     </Link>
                                 </div>
                                 <div style={{padding: "0px 10px"}}>

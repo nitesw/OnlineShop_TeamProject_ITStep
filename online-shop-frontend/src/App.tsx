@@ -12,6 +12,8 @@ import AboutPage from "./pages/about_page";
 import StorePage from "./pages/store_page";
 import {Notifications} from "@mantine/notifications";
 import {ProtectedRoute} from "./security/ProtectedRoute.tsx";
+import ProfilePage from "./pages/profile_page";
+import '@mantine/carousel/styles.css';
 
 function App() {
     const theme = createTheme({
@@ -29,7 +31,7 @@ function App() {
                 "#aa1c20",
                 "#961119"
             ]
-        }
+        },
     });
 
     return (
@@ -39,6 +41,7 @@ function App() {
             <Route path="/" element={<Layout/>}>
                 <Route index element={<StorePage/>} />
                 <Route path="/wishlist" element={<div>Wishlist page</div>} />
+                <Route path="/friends" element={<div>Friends page</div>} />
                 <Route path="/news" element={<div>News page</div>} />
                 <Route path="/stats" element={<div>Stats page</div>} />
                 <Route path="/community" element={<div>Community page</div>} />
@@ -46,7 +49,7 @@ function App() {
                 <Route path="/library" element={<div>Library page</div>} />
                 <Route path="/profile" element={
                     <ProtectedRoute>
-                        <div>Profile page</div>
+                        <ProfilePage />
                     </ProtectedRoute>
                 } />
                 <Route path="/support" element={<SupportPage />} />

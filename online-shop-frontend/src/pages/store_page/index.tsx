@@ -1,7 +1,7 @@
-import {useGetGenresQuery} from "../../services/api.genres.service.ts";
+import {useGetGamesQuery} from "../../services/api.games.service.ts";
 
 const StorePage = () => {
-    const { data: genres, isLoading, error } = useGetGenresQuery();
+    const { data: games, isLoading, error } = useGetGamesQuery();
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -11,7 +11,7 @@ const StorePage = () => {
         return <div>Error: {error.toString()}</div>;
     }
 
-    console.log('Redux data: ', genres);
+    console.log('Redux data: ', games);
 
     return (
         <>

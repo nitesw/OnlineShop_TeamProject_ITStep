@@ -6,5 +6,11 @@ export const accountService = {
     },
     logout() {
         tokenService.clearTokens();
+    },
+    getRefreshToken() {
+        return tokenService.getRefreshToken();
+    },
+    getAccessToken() {
+        return tokenService.getAccessToken();
     }
 };
